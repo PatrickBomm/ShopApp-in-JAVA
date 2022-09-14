@@ -149,12 +149,11 @@ public class App {
                         double auxTimer = System.currentTimeMillis();
                         if ((auxTimer - timer) > 1000) {
                             passwordTry = 0;
-                            break;
                         } else {
                             if (System.getProperty("os.name").contains("Windows")) {
                                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
                             }
-                            System.out.println("You have exceeded the number of attempts");
+                            System.out.println("\nYou have exceeded the number of attempts! Wait " + (1000 - (auxTimer - timer))/1000  +" seconds to try again!\n");
                             break;
                         }
                     }
