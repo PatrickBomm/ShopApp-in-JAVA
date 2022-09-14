@@ -88,8 +88,8 @@ public class ManipulateFiles {
             aux += "      ";
             aux += i.getQuantity() + "      ||";
         } else {
-            aux += "   ";
-            aux += i.getQuantity() + "   ||";
+            aux += "       ";
+            aux += i.getQuantity() + "      ||";
         }
 
         if (i.getClass().getName().equals("com.shop.FuitsAndVegetables")) {

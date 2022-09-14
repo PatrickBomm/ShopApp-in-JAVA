@@ -4,12 +4,12 @@ import java.util.*;
 
 public class Cart {
 
-    ArrayList<ItensAtCart> cart = new ArrayList<ItensAtCart>();
-    private int totalItens;
+    static ArrayList<ItensAtCart> cart = new ArrayList<ItensAtCart>();
+    private static int totalItens;
     private int totalValue;
 
     public Cart() {
-        this.totalItens = 0;
+        Cart.totalItens = 0;
         this.totalValue = 0;
     }
 
@@ -22,7 +22,7 @@ public class Cart {
     }
 
     public void setTotalItens(int totalItens) {
-        this.totalItens = totalItens;
+        Cart.totalItens = totalItens;
     }
 
     public int getTotalValue() {
@@ -34,11 +34,11 @@ public class Cart {
     }
 
     public void addItens(Itens item, int quantity) {
-        if(quantity <= 0){
+        if (quantity <= 0) {
             System.out.println("Invalid quantity");
             return;
         }
-        if(item == null){
+        if (item == null) {
             System.out.println("Item not found");
             return;
         }
@@ -59,12 +59,12 @@ public class Cart {
 
     }
 
-    public void removeItens(ItensAtCart item, int quantity) {
-        if(quantity <= 0){
+    public static void removeItens(ItensAtCart item, int quantity) {
+        if (quantity <= 0) {
             System.out.println("Invalid quantity");
             return;
         }
-        if(item == null){
+        if (item == null) {
             System.out.println("Item not found");
             return;
         }
@@ -80,8 +80,25 @@ public class Cart {
                         return;
                     }
                     if (quantity == cart.get(i).getQuantity()) {
+                        int aux = cart.get(i).getQuantity();
+                        int quantityItensAtShop = item.getItem().getQuantity();
+                        for (ItensAtCart j : cart) {
+                            aux = j.getQuantity();
+                            quantityItensAtShop = j.getItem().getQuantity();
+                            for (Itens itens : App.itensToSave) {
+                                if (itens.getId() == j.getItem().getId()) {
+                                    itens.setQuantity(quantityItensAtShop + aux);
+                                }
+                            }
+                        }
                         cart.remove(i);
                     } else {
+                        int quantityItensAtShop = item.getItem().getQuantity();
+                        for (Itens itens : App.itensToSave) {
+                            if (itens.getId() == item.getItem().getId()) {
+                                itens.setQuantity(quantityItensAtShop + quantity);
+                            }
+                        }
                         cart.get(i).setQuantity(cart.get(i).getQuantity() - quantity);
                     }
                 }
@@ -111,9 +128,20 @@ public class Cart {
         }
     }
 
-    public void removeAllItens() {
+    public static void removeAllItens() {
+        int aux = 0;
+        int quantityItensAtShop = 0;
+        for (ItensAtCart i : cart) {
+            aux = i.getQuantity();
+            quantityItensAtShop = i.getItem().getQuantity();
+            for (Itens itens : App.itensToSave) {
+                if (itens.getId() == i.getItem().getId()) {
+                    itens.setQuantity(quantityItensAtShop + aux);
+                }
+
+            }
+
+        }
         cart.clear();
-        totalItens = 0;
-        totalValue = 0;
     }
 }

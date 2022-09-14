@@ -1,4 +1,5 @@
 package com.shop;
+
 public class Itens {
 
     private int price;
@@ -43,6 +44,10 @@ public class Itens {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Itens() {
+
     }
 
     @Override

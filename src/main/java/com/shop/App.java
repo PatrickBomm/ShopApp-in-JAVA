@@ -66,11 +66,11 @@ public class App {
 
     public static void view() throws InterruptedException, IOException {
         boolean cond = true;
-        while (cond) {
+        if (System.getProperty("os.name").contains("Windows")) {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        }
 
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            }
+        while (cond) {
 
             System.out.println("\nWelcome to the shop\n");
             System.out.println("1 - Add itens to cart");
@@ -117,9 +117,9 @@ public class App {
                     int quantity2 = sc.nextInt();
                     for (ItensAtCart i : cart.getCart()) {
                         if (i.getItem().getId() == id2) {
-                            cart.removeItens(i, quantity2);
+                            Cart.removeItens(i, quantity2);
                             ManipulateFiles.gravarArquivo(itensToSave);
-                            if (cart.cart.contains(i) == false) {
+                            if (Cart.cart.contains(i) == false) {
                                 System.out.println("Item removed from cart");
                             }
                         }
@@ -128,7 +128,7 @@ public class App {
                     break;
                 case 3:
 
-                    if (cart.cart.isEmpty()) {
+                    if (Cart.cart.isEmpty()) {
                         System.out.println("Cart is empty");
                     } else {
                         System.out.println("\nItens in cart:\n");
@@ -147,9 +147,9 @@ public class App {
                     }
                     break;
                 case 5:
-                    cart.removeAllItens();
+                    Cart.removeAllItens();
                     ManipulateFiles.gravarArquivo(itensToSave);
-                    if (cart.cart.isEmpty()) {
+                    if (Cart.cart.isEmpty()) {
                         System.out.println("Cart is empty");
                     }
                     break;
@@ -191,7 +191,7 @@ public class App {
                 System.out.println("\nYou have exceeded the number of attempts! Wait "
                         + (60000 - (auxTimer - timer)) / 1000 + " seconds to try again!\n");
                 double startCounter = System.currentTimeMillis();
-                while (System.currentTimeMillis() - startCounter < 3000) {
+                while (System.currentTimeMillis() - startCounter < 2000) {
                 }
                 mainView();
             }
@@ -201,11 +201,10 @@ public class App {
         if (password.equals("admin") || password.equals("Admin") || password.equals("ADMIN")
                 || password.equals("1234")) {
             boolean cond2 = true;
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
             while (cond2) {
-
-                if (System.getProperty("os.name").contains("Windows")) {
-                    new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-                }
 
                 System.out.println("\nWelcome to the admin panel\n");
                 System.out.println("1 - Add itens to shop");
@@ -222,6 +221,14 @@ public class App {
                     case 1:
                         boolean authID = false;
                         System.out.println("\nType the id of the item you want to add to the shop: ");
+
+                        String ids = "\n";
+                        for (Itens i : itensToSave) {
+                            ids += i.getId() + ", ";
+                        }
+                        ids += ".\n";
+
+                        System.out.println("Note: The ids already used: " + ids);
                         int id4 = sc.nextInt();
                         if (id4 < 0) {
                             System.out.println("\nInvalid id");
@@ -237,7 +244,7 @@ public class App {
                         if (authID == true) {
                             double startCounter = System.currentTimeMillis();
                             System.out.println("\nGoing back to the Admin menu in 3 seconds");
-                            while (System.currentTimeMillis() - startCounter < 3000) {
+                            while (System.currentTimeMillis() - startCounter < 2500) {
                             }
                             break;
                         }
@@ -263,7 +270,7 @@ public class App {
                                 "\nType the kg of the item you want to add to the shop: (If the item is not a fruit or vegetable, type 0)");
                         int kg = sc.nextInt();
                         if (kg > 0) {
-                            FuitsAndVegetables item = new FuitsAndVegetables(id4, price, name, quantity3, kg);
+                            FuitsAndVegetables item = new FuitsAndVegetables(price, kg, name, quantity3, id4);
                             itensToSave.add(item);
                             ManipulateFiles.gravarArquivo(itensToSave);
 
@@ -297,9 +304,8 @@ public class App {
                                     ManipulateFiles.gravarArquivo(itensToSave);
                                 } else {
                                     System.out.println("\nNot enough quantity at shop");
+                                    break;
                                 }
-                            } else {
-                                System.out.println("\nItem not found");
                             }
                         }
                         break;
@@ -340,11 +346,12 @@ public class App {
                             System.out.println("\nShop is empty");
                             break;
                         }
-                        int total = 0;
+                        double total = 0;
                         for (Itens i : itensToSave) {
-                            total += i.getPrice() * i.getQuantity();
+                            total += (i.getPrice() * i.getQuantity());
                         }
-                        System.out.println("\nTotal value of the shop: " + total);
+                        System.out.println("\nTotal value of the shop: R$" + total);
+
                         break;
                     case 7:
                         cond2 = false;
@@ -360,7 +367,7 @@ public class App {
                         System.out.println("\nInvalid option");
                         double startCounter = System.currentTimeMillis();
                         System.out.println("\nGoing back to the Admin menu in 3 seconds");
-                        while (System.currentTimeMillis() - startCounter < 3000) {
+                        while (System.currentTimeMillis() - startCounter < 2500) {
                         }
                         break;
                 }
@@ -374,7 +381,7 @@ public class App {
             }
             double startCounter = System.currentTimeMillis();
             System.out.println("\nGoing back to the Main menu in 3 seconds");
-            while (System.currentTimeMillis() - startCounter < 3000) {
+            while (System.currentTimeMillis() - startCounter < 2500) {
             }
         }
         mainView();
@@ -427,7 +434,7 @@ public class App {
                     System.out.println("\nInvalid option");
                     double startCounter = System.currentTimeMillis();
                     System.out.println("\nGoing back to the Main menu in 3 seconds");
-                    while (System.currentTimeMillis() - startCounter < 3000) {
+                    while (System.currentTimeMillis() - startCounter < 2500) {
                     }
                     break;
             }
