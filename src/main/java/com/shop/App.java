@@ -12,6 +12,7 @@ public class App {
 
     static int passwordTry = 0;
     static double timer = 0;
+    static String newPassword = "";
 
     static ArrayList<Itens> itensToSave = new ArrayList<Itens>();
     static Scanner sc = new Scanner(System.in);
@@ -86,6 +87,11 @@ public class App {
 
             switch (option) {
                 case 1:
+                    if (itensToSave.size() == 0) {
+                        System.out.println("There are no items in the store");
+                        break;
+                    }
+
                     System.out.println("\nItens at shop:\n");
                     for (Itens itens : itensToSave) {
                         System.out.println(itens);
@@ -107,6 +113,10 @@ public class App {
                     }
                     break;
                 case 2:
+                    if (itensToSave.size() == 0) {
+                        System.out.println("There are no items in the store");
+                        break;
+                    }
                     System.out.println("\nItens in cart:\n");
                     for (ItensAtCart itens : cart.getCart()) {
                         System.out.println(itens);
@@ -138,6 +148,10 @@ public class App {
                     }
                     break;
                 case 4:
+                    if (itensToSave.size() == 0) {
+                        System.out.println("There are no items in the store");
+                        break;
+                    }
                     System.out.println("\nType the id of the item you want to search: ");
                     int id3 = sc.nextInt();
                     for (Itens i : itensToSave) {
@@ -147,6 +161,14 @@ public class App {
                     }
                     break;
                 case 5:
+                    if (itensToSave.size() == 0) {
+                        System.out.println("There are no items in the store");
+                        break;
+                    }
+                    if (cart.getCart().isEmpty()) {
+                        System.out.println("Cart is empty");
+                        break;
+                    }
                     Cart.removeAllItens();
                     ManipulateFiles.gravarArquivo(itensToSave);
                     if (Cart.cart.isEmpty()) {
@@ -154,6 +176,14 @@ public class App {
                     }
                     break;
                 case 6:
+                    if (itensToSave.size() == 0) {
+                        System.out.println("There are no items in the store");
+                        break;
+                    }
+                    if (cart.getCart().isEmpty()) {
+                        System.out.println("Cart is empty");
+                        break;
+                    }
                     cart.showTotalValue();
                     break;
                 case 7:
@@ -182,6 +212,7 @@ public class App {
 
         if (passwordTry >= 3) {
             double auxTimer = System.currentTimeMillis();
+
             if ((auxTimer - timer) > 60000) {
                 passwordTry = 0;
             } else {
@@ -189,16 +220,49 @@ public class App {
                     new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
                 }
                 System.out.println("\nYou have exceeded the number of attempts! Wait "
-                        + (60000 - (auxTimer - timer)) / 1000 + " seconds to try again!\n");
-                double startCounter = System.currentTimeMillis();
-                while (System.currentTimeMillis() - startCounter < 2000) {
+                        + (60000 - (auxTimer - timer)) / 1000 + " seconds to try again!\n\n");
+                System.out.println("Do you want to change the password? (Y/N)");
+                String option = sc.next();
+                if (option.equalsIgnoreCase("Y")) {
+                    System.out.println("Type the new password: ");
+                    String password = sc.next();
+                    newPassword = (password);
+                    System.out.println("Password changed");
+                    double startCounter = System.currentTimeMillis();
+                    System.out.println("\nGoing back to the main menu in 3 seconds");
+                    while (System.currentTimeMillis() - startCounter < 3000) {
+                    }
+                    passwordTry = 2;
+                    mainView();
                 }
-                mainView();
+                if (option.equalsIgnoreCase("N")) {
+                    {
+                        System.out.println("Going back to the main menu");
+                        double startCounter = System.currentTimeMillis();
+                        System.out.println("\nGoing back to the main menu in 3 seconds");
+                        while (System.currentTimeMillis() - startCounter < 3000) {
+                        }
+                        mainView();
+                    }
+
+                    double startCounter = System.currentTimeMillis();
+                    while (System.currentTimeMillis() - startCounter < 2000) {
+                    }
+                    mainView();
+                } else {
+                    System.out.println("Invalid option");
+                    System.out.println("Going back to the main menu");
+                    double startCounter = System.currentTimeMillis();
+                    while (System.currentTimeMillis() - startCounter < 2000) {
+                    }
+                    mainView();
+                }
             }
         }
         System.out.println("\nType the password: ");
         String password = sc.next();
         if (password.equals("admin") || password.equals("Admin") || password.equals("ADMIN")
+                || newPassword.equals(password)
                 || password.equals("1234")) {
             boolean cond2 = true;
             if (System.getProperty("os.name").contains("Windows")) {
