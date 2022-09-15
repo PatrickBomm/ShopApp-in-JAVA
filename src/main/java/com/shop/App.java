@@ -62,11 +62,12 @@ public class App {
         itensToSave.add(carrot);
         itensToSave.add(onion);
         itensToSave.add(potato);
-        ManipulateFiles.gravarArquivo(itensToSave);
+        ManipulateFiles.saveFile(itensToSave);
     }
 
     public static void view() throws InterruptedException, IOException {
         boolean cond = true;
+        ManipulateFiles.saveCartAtFile(Cart.cart);
         if (System.getProperty("os.name").contains("Windows")) {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         }
@@ -105,7 +106,9 @@ public class App {
                             if (quantity <= i.getQuantity()) {
                                 cart.addItens(i, quantity);
                                 i.setQuantity(i.getQuantity() - quantity);
-                                ManipulateFiles.gravarArquivo(itensToSave);
+                                ManipulateFiles.saveFile(itensToSave);
+                                System.out.println("\nItem added to cart");
+                                ManipulateFiles.saveCartAtFile(Cart.cart);
                             } else {
                                 System.out.println("Not enough quantity at shop");
                             }
@@ -123,15 +126,29 @@ public class App {
                     }
                     System.out.println("\nType the id of the item you want to remove from the cart: ");
                     int id2 = sc.nextInt();
+                    int counterIds = 0;
+                    for (ItensAtCart it : cart.getCart()) {
+
+                        if (it.getItem().getId() != id2) {
+                            counterIds++;
+                        }
+                    }
+                    if (counterIds == cart.getCart().size()) {
+                        System.out.println("Item not found");
+                        break;
+                    }
+
                     System.out.println("\nType the quantity of the item you want to remove from the cart: ");
                     int quantity2 = sc.nextInt();
                     for (ItensAtCart i : cart.getCart()) {
                         if (i.getItem().getId() == id2) {
-                            Cart.removeItens(i, quantity2);
-                            ManipulateFiles.gravarArquivo(itensToSave);
+                            cart.removeItens(i, quantity2);
+                            ManipulateFiles.saveFile(itensToSave);
+                            ManipulateFiles.saveCartAtFile(Cart.cart);
                             if (Cart.cart.contains(i) == false) {
                                 System.out.println("Item removed from cart");
                             }
+                            break;
                         }
 
                     }
@@ -170,7 +187,8 @@ public class App {
                         break;
                     }
                     Cart.removeAllItens();
-                    ManipulateFiles.gravarArquivo(itensToSave);
+                    ManipulateFiles.saveFile(itensToSave);
+                    ManipulateFiles.saveCartAtFile(Cart.cart);
                     if (Cart.cart.isEmpty()) {
                         System.out.println("Cart is empty");
                     }
@@ -184,7 +202,7 @@ public class App {
                         System.out.println("Cart is empty");
                         break;
                     }
-                    cart.showTotalValue();
+                    System.out.println("Total value of the cart: R$" + cart.getTotalValue() + ",00");
                     break;
                 case 7:
                     cond = false;
@@ -336,12 +354,12 @@ public class App {
                         if (kg > 0) {
                             FuitsAndVegetables item = new FuitsAndVegetables(price, kg, name, quantity3, id4);
                             itensToSave.add(item);
-                            ManipulateFiles.gravarArquivo(itensToSave);
+                            ManipulateFiles.saveFile(itensToSave);
 
                         } else {
                             Itens item = new Itens(price, name, quantity3, id4);
                             itensToSave.add(item);
-                            ManipulateFiles.gravarArquivo(itensToSave);
+                            ManipulateFiles.saveFile(itensToSave);
 
                         }
                         break;
@@ -359,13 +377,13 @@ public class App {
                             if (i.getId() == id5) {
                                 if (quantity4 == i.getQuantity()) {
                                     itensToSave.remove(i);
-                                    ManipulateFiles.gravarArquivo(itensToSave);
+                                    ManipulateFiles.saveFile(itensToSave);
                                     System.out.println("\nItem removed from shop");
                                     break;
                                 }
                                 if (quantity4 <= i.getQuantity() && quantity4 > 0) {
                                     i.setQuantity(i.getQuantity() - quantity4);
-                                    ManipulateFiles.gravarArquivo(itensToSave);
+                                    ManipulateFiles.saveFile(itensToSave);
                                 } else {
                                     System.out.println("\nNot enough quantity at shop");
                                     break;
@@ -402,7 +420,7 @@ public class App {
                             break;
                         }
                         itensToSave.removeAll(itensToSave);
-                        ManipulateFiles.gravarArquivo(itensToSave);
+                        ManipulateFiles.saveFile(itensToSave);
                         System.out.println("\nAll itens removed from shop");
                         break;
                     case 6:

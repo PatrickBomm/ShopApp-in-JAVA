@@ -33,7 +33,7 @@ public class TestCart {
         Cart cart = new Cart();
         Itens item = new Itens(10, "car", 1, 1);
         cart.addItens(item, 1);
-        Cart.removeItens(cart.getCart().get(0), 1);
+        cart.removeItens(cart.getCart().get(0), 1);
         assertTrue(cart.getCart().size() == 0);
     }
 
@@ -44,7 +44,7 @@ public class TestCart {
         cart.addItens(item, 1);
         Itens item2 = new Itens(10, "ball", 1, 1);
         cart.addItens(item2, 1);
-        Cart.removeItens(cart.getCart().get(0), 1);
+        cart.removeItens(cart.getCart().get(0), 1);
         assertEquals(cart.getCart().size(), 1);
     }
 

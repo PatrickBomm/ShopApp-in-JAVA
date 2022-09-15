@@ -6,11 +6,11 @@ public class Cart {
 
     static ArrayList<ItensAtCart> cart = new ArrayList<ItensAtCart>();
     private static int totalItens;
-    private int totalValue;
+    private static int totalValue;
 
     public Cart() {
         Cart.totalItens = 0;
-        this.totalValue = 0;
+        Cart.totalValue = 0;
     }
 
     public ArrayList<ItensAtCart> getCart() {
@@ -30,7 +30,7 @@ public class Cart {
     }
 
     public void setTotalValue(int totalValue) {
-        this.totalValue = totalValue;
+        Cart.totalValue = totalValue;
     }
 
     public void addItens(Itens item, int quantity) {
@@ -59,7 +59,7 @@ public class Cart {
 
     }
 
-    public static void removeItens(ItensAtCart item, int quantity) {
+    public void removeItens(ItensAtCart item, int quantity) {
         if (quantity <= 0) {
             System.out.println("Invalid quantity");
             return;
@@ -86,20 +86,24 @@ public class Cart {
                             aux = j.getQuantity();
                             quantityItensAtShop = j.getItem().getQuantity();
                             for (Itens itens : App.itensToSave) {
-                                if (itens.getId() == j.getItem().getId()) {
+                                if (j.getItem() == itens) {
                                     itens.setQuantity(quantityItensAtShop + aux);
+
                                 }
                             }
                         }
                         cart.remove(i);
+                        totalItens--;
+
                     } else {
                         int quantityItensAtShop = item.getItem().getQuantity();
                         for (Itens itens : App.itensToSave) {
-                            if (itens.getId() == item.getItem().getId()) {
+                            if (item.getItem() == itens) {
                                 itens.setQuantity(quantityItensAtShop + quantity);
                             }
                         }
                         cart.get(i).setQuantity(cart.get(i).getQuantity() - quantity);
+                        break;
                     }
                 }
             }
@@ -119,12 +123,12 @@ public class Cart {
         }
     }
 
-    public void showTotalValue() {
+    public static int showTotalValue() {
         if (cart.isEmpty()) {
             System.out.println("\nCart is empty");
-            return;
+            return 0;
         } else {
-            System.out.println("Total value of the cart: R$" + totalValue + ",00");
+            return totalValue;
         }
     }
 
